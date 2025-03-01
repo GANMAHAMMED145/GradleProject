@@ -1,10 +1,10 @@
 FROM openjdk:17-jdk-slim-buster
 
 # Build Argument for JAR file
-ARG JAR_FILE=build/libs/*.jar
+ARG JAR_FILE=build/libs/my-app-0.0.1-SNAPSHOT.jar  # Adjust based on your actual JAR filename
 
-# Fix: Manually specify the JAR file OR use a wildcard-friendly approach
-COPY build/libs/my-app.jar app.jar  # Replace with your actual JAR filename
+# Copy the built JAR file to the container
+COPY ${JAR_FILE} app.jar
 
 # Creating a directory for extracted contents
 RUN mkdir -p /destination-dir-for-add
@@ -14,4 +14,5 @@ ADD sample.tar.gz /destination-dir-for-add/
 
 # Run the Spring Boot application
 ENTRYPOINT ["java", "-jar", "/app.jar"]
+
 
