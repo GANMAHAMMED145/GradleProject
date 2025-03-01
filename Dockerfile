@@ -1,18 +1,14 @@
+# Step 1: Build the app inside the container
+FROM openjdk:17-jdk-slim-buster AS build
+WORKDIR /app
+COPY . .
+RUN ./gradlew clean build -x test  # Skip tests to speed up build
+
+# Step 2: Create a lightweight runtime image
 FROM openjdk:17-jdk-slim-buster
+WORKDIR /app
+COPY --from=build /app/build/libs/*.jar app.jar
+ENTRYPOINT ["java", "-jar", "/app/app.jar"]
 
-# Build Argument for JAR file
-ARG JAR_FILE=build/libs/my-app-0.0.1-SNAPSHOT.jar  # Adjust based on your actual JAR filename
-
-# Copy the built JAR file to the container
-COPY ${JAR_FILE} app.jar
-
-# Creating a directory for extracted contents
-RUN mkdir -p /destination-dir-for-add
-
-# Extracting sample.tar.gz automatically
-ADD sample.tar.gz /destination-dir-for-add/
-
-# Run the Spring Boot application
-ENTRYPOINT ["java", "-jar", "/app.jar"]
 
 
