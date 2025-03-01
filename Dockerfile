@@ -7,8 +7,9 @@ RUN ./gradlew clean build -x test  # Skip tests for faster build
 # Step 2: Runtime Image
 FROM openjdk:17-jdk-slim-buster
 WORKDIR /app
-COPY --from=build /app/build/libs/*.jar /app/app.jar
-ENTRYPOINT ["java", "-jar", "/app/app.jar"]
+COPY --from=build /app/build/libs/*.jar /app/
+ENTRYPOINT ["sh", "-c", "java -jar /app/$(ls /app | grep .jar)"]
+
 
 
 
